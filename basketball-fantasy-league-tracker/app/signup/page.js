@@ -19,6 +19,9 @@ export default function SignUpPage() {
 
         setError('')
 
+        // Create an object with all the user's entered information
+        // This is what we'll send to our API route
+        // Shorthand syntax: {email, name, password} same as {email: email, name: name, password: password}
         //store all the users entered information
         const userInfo = {email, name, password}
 
@@ -27,9 +30,9 @@ export default function SignUpPage() {
         //ensuring the entered information has no duplicates (email & password)
         try {
             const response = await fetch('/api/auth/signup', {
-                method: 'POST',
+                method: 'POST', //POST sends/creates data 
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(userInfo)
+                body: JSON.stringify(userInfo) //<- this part goes into the request paramter in /api/auth/signup
             })
 
         const result = await response.json()
@@ -37,6 +40,7 @@ export default function SignUpPage() {
 
          if (response.ok) {
             //Successful sign up, navigate us to the login page
+            //user was created wohooo
             router.push('/login')
          }
         else {
