@@ -13,6 +13,7 @@ export default function LoginPage() {
 
   const router = useRouter()
 
+  // This function runs when the user submits the login form
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -20,15 +21,23 @@ export default function LoginPage() {
 
     setError('')
 
+    // signIn() is NextAuth's magic function that:
+    // 1. Sends email/password to our authorize() function in [...nextauth]/route.js
+    // 2. The authorize() function checks if credentials are valid
+    // 3. If valid, NextAuth creates a session (stores in cookies/JWT)
+    // 4. Returns a result object telling us if login succeeded or failed
     const result = await signIn('credentials', {
       email: isEmail,
       password: isPassword,
       redirect: false
     })
 
+    // result.error will exist if login FAILED (wrong email/password)
+    // The authorize() function returned null, so NextAuth sets result.error
     if (result?.error) {
       //The entered email/password is not existent in our database
       setError('Email or password does not exist')
+      setIsLoading(false)
     }else{
       //Success there's an account with that email & password
       router.push('/dashboard')
