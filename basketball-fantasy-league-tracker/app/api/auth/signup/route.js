@@ -21,10 +21,12 @@ export async function POST(request) {
             );
     }
 
+    //find an exisiting email 
     const existingUserEmail = await prisma.user.findUnique({
         where: {email}
     })
 
+    //if the email already exists return the message
     if (existingUserEmail) {
         return NextResponse.json(
             { error: "This user already exists" },

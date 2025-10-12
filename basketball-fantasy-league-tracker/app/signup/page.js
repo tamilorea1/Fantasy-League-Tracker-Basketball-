@@ -63,7 +63,7 @@ export default function SignUpPage() {
              name="email" 
              placeholder="Example@gmail.com" 
              onChange={(e) => setEmail(e.target.value)}
-             required />
+              />
 
             <input 
             type="password" 
@@ -71,7 +71,7 @@ export default function SignUpPage() {
             name="password" 
             minLength="8" 
             onChange={(e) => setPassword(e.target.value)}
-            required />
+             />
 
             <input 
             type="text" 
