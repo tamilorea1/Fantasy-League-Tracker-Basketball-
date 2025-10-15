@@ -20,4 +20,61 @@ model User {
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  leagueMember     LeagueMember[]        // User can be in many leagues
+
+  createdLeagues League[] @relation("CreatedLeagues") //give references good relation names
+
+  team           Team[] @relation("OwnedTeams") //one user has one team per league
+
+
+}
+
+model League {
+  id  String   @id @default(cuid())
+  name String 
+  createdAt DateTime @default(now())
+
+  //tracks who created a league
+  creatorId String
+  creator   User   @relation("CreatedLeagues", fields: [creatorId], references: [id])
+
+  leagueMember     LeagueMember[]        // User can be in many leagues
+  team             Team[]
+
+}
+
+//This is an explicit many to many relationship
+//which allows me to include custom fields
+//Tracks all the users in the league
+//which also includes the creator of the league
+
+model LeagueMember{
+  id    String  @id @default(cuid())
+  userId            String  
+  leagueId          String
+  joinedAt          DateTime @default(now())  //new field that I included
+
+  role              String  @default("member") // this is the role of a user in a league. Can be Admin or regular user
+
+  //references the ids of the user and league from their respective models
+  user              User    @relation(fields: [userId], references: [id])  
+  league            League  @relation(fields: [leagueId], references: [id])
+
+
+  @@unique([userId, leagueId])
+}
+
+
+//This includes the 1:1 relationship between User & Team a well as the 1:N relationship between League & Team
+model Team {
+  id    String  @id @default(cuid())
+  teamName  String  @unique
+  teamOwnerId String   //ensures one team is owned by one user
+  leagueId    String
+  createdAt DateTime @default(now())
+
+  user    User    @relation("OwnedTeams",fields:[teamOwnerId], references:[id])
+  league  League  @relation(fields:[leagueId], references:[id])
+
+    @@unique([teamOwnerId, leagueId]) //No duplicate teams from the same User
 }
