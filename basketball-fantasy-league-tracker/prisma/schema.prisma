@@ -76,5 +76,5 @@ model Team {
   user    User    @relation("OwnedTeams",fields:[teamOwnerId], references:[id])
   league  League  @relation(fields:[leagueId], references:[id])
 
-    @@unique([teamOwnerId, leagueId]) //No duplicate teams from the same User
+  @@unique([teamOwnerId, leagueId]) //No duplicate teams from the same User
 }
