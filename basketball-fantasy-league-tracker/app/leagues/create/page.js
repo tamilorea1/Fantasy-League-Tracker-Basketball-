@@ -1,12 +1,16 @@
 'use client'
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function CreateLeaguePage() {
 
     const [leagueName, setLeagueName] = useState('')
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState('')
+    const [message, setMessage] = useState('')
+
+    const router = useRouter()
 
     async function handleLeagueSubmit(e) {
         e.preventDefault()
@@ -28,18 +32,29 @@ export default function CreateLeaguePage() {
 
             //Finish showing the league on UI
 
-
+            if (response.ok) {
+                setMessage(result.message)
+                setIsLoading(false)
+                router.push(`/leagues/${result.league.id}`)
+                
+            }
+            else{
+                setError(result.error)
+                setIsLoading(false)
+            }
 
             
         } catch (error) {
-            
+            setError("Network error. Please retry")
+            setIsLoading(false)
         }
     }
 
   return (
     <div>
         <h1>Create Your League</h1>
-        {error && <p>Invalid</p>}
+        {error && <p>{error}</p>}
+        {message && <p>{message}</p>}
         <form onSubmit={handleLeagueSubmit}>
             <input 
                 type="name"
