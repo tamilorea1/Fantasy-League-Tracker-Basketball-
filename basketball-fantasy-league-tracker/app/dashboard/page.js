@@ -52,10 +52,16 @@ export default async function DashboardPage() {
         (
           <ul>
             {isMember.map((membership) => (
-              <li key={membership.id}>
+              <div  key={membership.id}>
+                <li>
                 League Name: {membership.league.name}
-                Role: {membership.role}
+                
               </li>
+              <li>
+                  Role: {membership.role}
+              </li>
+              </div>
+              
             ))}
           </ul>
         )

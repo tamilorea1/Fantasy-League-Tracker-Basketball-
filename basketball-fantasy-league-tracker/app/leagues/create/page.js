@@ -30,12 +30,14 @@ export default function CreateLeaguePage() {
 
             const result = await response.json()
 
-            //Finish showing the league on UI
-
+            //if the response is successful
             if (response.ok) {
+                // store the success message from our api route page
                 setMessage(result.message)
                 setIsLoading(false)
-                router.push(`/leagues/${result.league.id}`)
+                //redirect to the new league page by using its unique id
+                //this also passes the league id
+                router.push(`/leagues/${result.league.id}`) 
                 
             }
             else{
