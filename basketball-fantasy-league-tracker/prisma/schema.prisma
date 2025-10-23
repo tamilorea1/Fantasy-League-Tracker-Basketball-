@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,67 +8,49 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid()) 
-  email     String   @unique
-  name      String?
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  leagueMember     LeagueMember[]        // User can be in many leagues
-
-  createdLeagues League[] @relation("CreatedLeagues") //give references good relation names
-
-  team           Team[] @relation("OwnedTeams") //one user has one team per league
-
-
+  id             String         @id @default(cuid())
+  email          String         @unique
+  name           String?
+  password       String
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  createdLeagues League[]       @relation("CreatedLeagues")
+  leagueMember   LeagueMember[]
+  team           Team[]         @relation("OwnedTeams")
 }
 
 model League {
-  id  String   @id @default(cuid())
-  name String 
-  createdAt DateTime @default(now())
+  id           String         @id @default(cuid())
+  name         String
+  joinCode     String         @unique
 
-  //tracks who created a league
-  creatorId String
-  creator   User   @relation("CreatedLeagues", fields: [creatorId], references: [id])
-
-  leagueMember     LeagueMember[]        // User can be in many leagues
-  team             Team[]
-
+  createdAt    DateTime       @default(now())
+  creatorId    String
+  creator      User           @relation("CreatedLeagues", fields: [creatorId], references: [id])
+  leagueMember LeagueMember[]
+  team         Team[]
 }
 
-//This is an explicit many to many relationship
-//which allows me to include custom fields
-//Tracks all the users in the league
-//which also includes the creator of the league
+model LeagueMember {
+  id       String   @id @default(cuid())
+  userId   String
+  leagueId String
+  joinedAt DateTime @default(now())
+  role     String   @default("member")
+  league   League   @relation(fields: [leagueId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
 
-model LeagueMember{
-  id    String  @id @default(cuid())
-  userId            String  
-  leagueId          String
-  joinedAt          DateTime @default(now())  //new field that I included
-
-  role              String  @default("member") // this is the role of a user in a league. Can be Admin or regular user
-
-  //references the ids of the user and league from their respective models
-  user              User    @relation(fields: [userId], references: [id])  
-  league            League  @relation(fields: [leagueId], references: [id])
-
-
-  @@unique([userId, leagueId])
+  @@unique([userId, leagueId], name: "leagueMemberId")
 }
 
-
-//This includes the 1:1 relationship between User & Team a well as the 1:N relationship between League & Team
 model Team {
-  id    String  @id @default(cuid())
-  teamName  String  @unique
-  teamOwnerId String   //ensures one team is owned by one user
+  id          String   @id @default(cuid())
+  teamName    String   @unique
+  teamOwnerId String
   leagueId    String
-  createdAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  league      League   @relation(fields: [leagueId], references: [id])
+  user        User     @relation("OwnedTeams", fields: [teamOwnerId], references: [id])
 
-  user    User    @relation("OwnedTeams",fields:[teamOwnerId], references:[id])
-  league  League  @relation(fields:[leagueId], references:[id])
-
-  @@unique([teamOwnerId, leagueId]) //No duplicate teams from the same User
+  @@unique([teamOwnerId, leagueId])
 }

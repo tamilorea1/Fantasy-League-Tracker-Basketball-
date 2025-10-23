@@ -3,6 +3,41 @@ import {prisma} from '@/lib/prisma'
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
 
+
+//generates a random 6 character join code for leagues
+function generateJoinCode() {
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    let joinCode = ''
+
+    //loops 6 times to create the 6 character code
+    for (let i = 0; i < 6; i++) {
+        //Gets a random index between 0-35(length of the characters)
+        //rounds up or down the float number to get a whole index
+        const randomIndex = Math.floor(Math.random() * characters.length)
+
+        //gets the charcater at that random index
+        const acquiredCharacter = characters.charAt(randomIndex)
+
+        //add the charcater to our join code
+        joinCode += acquiredCharacter
+        
+    }
+    return joinCode
+}
+
+/*creats a new league with the user who created it as admin.
+* Request body: {leagueName}
+
+* Success Response prints the "League created successfully"
+* Assigns the newly created league to league ( league: {...})
+* Creates a new LeagueMember record which is the creator i.e admin (leagueMember:{...})
+
+
+
+
+*/
+
+
 export  async function POST(request) {
   
     try {
@@ -19,6 +54,7 @@ export  async function POST(request) {
         }
 
         //This is the state that store the entered League name by the user
+        //we extract it from the request body
         const {leagueName} = await request.json()
 
         //if the league name wasn't provided, display the error
@@ -30,18 +66,19 @@ export  async function POST(request) {
         }
 
         //create a new league
-        // store the id of the current user
+        // store the id of the current user(the creator), and generate a unique join code
         const newLeague = await prisma.league.create({
             data: {
                 creatorId: session.user.id ,
-                name: leagueName
+                name: leagueName,
+                joinCode: generateJoinCode()
             }
         })
 
         //creates a new league member
         //creator is given the role of admin
         //we store the creators id as the current user in the session
-        //we store the league id using the newLeague object
+        //we store the newly created league id using the newLeague object
         const newLeagueMember = await prisma.leagueMember.create({
             data: {
                 role: 'admin',
@@ -50,13 +87,15 @@ export  async function POST(request) {
             }
         })
 
+       
+
         //success
         //used the model names to store the new league and member
         return NextResponse.json(
             {message: 'League created successfully', 
             
-                league: newLeague,
-                leagueMember: newLeagueMember
+                league: newLeague,  //contains all fields associated with League
+                leagueMember: newLeagueMember //contains the creator's records
             },
             {status: 201}
 
