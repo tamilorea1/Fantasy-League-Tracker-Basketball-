@@ -1,4 +1,9 @@
 import {prisma} from "@/lib/prisma"
+import Link from "next/link"
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "@/lib/auth"
+import { redirect } from "next/navigation"
+
 
 /**
  * League Display Page
@@ -21,8 +26,17 @@ import {prisma} from "@/lib/prisma"
  * 
  */
 
+
 export default async function newLeaguePage({params}) {
 
+    //gets the current user id to tell us WHO is logged in
+    const session = await getServerSession(authOptions)
+  
+    //if user isn't logged in, redirect them back to the login page
+    if (!session) {
+      redirect('/login')
+    }
+    
     //Gets the league ID from the URL
     //id is gotten from the name of my dynamic route folder
     const leagueIdentification =  params.id
@@ -55,10 +69,20 @@ export default async function newLeaguePage({params}) {
     })
 
 
+
     //if league doesn't exist with this id show the print statement
     if (!league) {
       return <p>League not found</p>
     }
+
+
+    /**
+     * This variable will be used to check if the user has a team
+     * It checks id in our team records, if there's a teamOwener id that is the same as the current user's id
+     */
+    const myTeam = league.team.find(team => team.teamOwnerId === session.user.id)
+
+
   return (
     <div>
         <p>League Name: {league.name}</p>
@@ -72,6 +96,17 @@ export default async function newLeaguePage({params}) {
               <li>{member.user.name}</li>
           </div>
         ))}
+
+        {/**
+         * If a team name has been created we display the current user's name
+         * else we route them to create their team name and be redirected back to this page
+         */}
+        {myTeam ? <p>Your team name: {myTeam.teamName}</p> : 
+        <Link href={`/leagues/${leagueIdentification}/createTeam`}>
+          <button>
+            Create team name
+          </button>
+          </Link>}
         
     </div>
   )

@@ -52,5 +52,6 @@ model Team {
   league      League   @relation(fields: [leagueId], references: [id])
   user        User     @relation("OwnedTeams", fields: [teamOwnerId], references: [id])
 
-  @@unique([teamOwnerId, leagueId])
+// Our composite primary key that identifies a Team
+  @@unique([teamOwnerId, leagueId], name: "teamOwnership") 
 }
