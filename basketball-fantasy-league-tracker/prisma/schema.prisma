@@ -29,6 +29,7 @@ model League {
   creator      User           @relation("CreatedLeagues", fields: [creatorId], references: [id])
   leagueMember LeagueMember[]
   team         Team[]
+  draft        Draft?       //League can exist before the draft begins/ is created
 }
 
 model LeagueMember {
@@ -51,7 +52,51 @@ model Team {
   createdAt   DateTime @default(now())
   league      League   @relation(fields: [leagueId], references: [id])
   user        User     @relation("OwnedTeams", fields: [teamOwnerId], references: [id])
+  draftPick   DraftPick[]
+
 
 // Our composite primary key that identifies a Team
   @@unique([teamOwnerId, leagueId], name: "teamOwnership") 
+}
+
+model Draft{
+  id                  String    @id @default(cuid())
+  leagueId            String    @unique
+  status              String    //Not active, active, completed
+  totalRounds         Int   //Total Number of rounds in a draft (8-10)
+  currentRound        Int   //Should be the first round of my draft initally
+  currentPickNumber   Int   //The current pick of the Draft
+  startTime           DateTime?
+  completedTime       DateTime?
+  createdAt           DateTime   @default(now())
+  snakeDraft          Boolean
+  league              League    @relation(fields: [leagueId], references: [id])
+  draftPick           DraftPick[]
+}
+
+model DraftPick{
+  id                  String  @id @default(cuid())
+  teamId              String  //Specific draft pick associated with a specific team
+  draftId             String  //Identifies the specific draft a user is in 
+  playerId            String?  //specific player in a specific draft
+  pickNumber          Int  
+  pickOrder           Int
+  round               Int
+  draft               Draft   @relation(fields: [draftId], references: [id])
+  team                Team    @relation(fields: [teamId], references: [id])
+  player              Player?  @relation(fields: [playerId], references: [id])
+}
+
+model Player{
+    id                  String  @id @default(cuid())
+    name                String  //Player name
+    position            String  //PG SG SF PF C
+    team                String  // NBA Team
+    points              Float
+    assists             Float
+    rebounds            Float
+    blocks              Float
+    steals              Float
+
+    draftPick           DraftPick[]
 }
