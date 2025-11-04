@@ -90,7 +90,7 @@ model DraftPick{
 model Player{
     id                  String  @id @default(cuid())
     name                String  //Player name
-    position            String  //PG SG SF PF C
+    position            String?  //PG SG SF PF C
     team                String  // NBA Team
     points              Float
     assists             Float
