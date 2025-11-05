@@ -43,12 +43,8 @@ export default async function DashboardPage() {
             <button>Join League</button>
           </Link>
         
-        {/*
-        We iterate through isMember since its an array of objects.
-        In order to get access to the League model (nested),
-        we have access it by adding it after our parameter.
-        */}
-        {isMember.length > 0 ? 
+       
+        {/* {isMember.length > 0 ? 
         (
           <ul>
             {isMember.map((membership) => (
@@ -67,7 +63,32 @@ export default async function DashboardPage() {
         )
         :
         <p>NO leagues</p> 
-        }
+        } */}
+
+
+         {/*
+            We iterate through isMember since its an array of objects.
+            In order to get access to the League model (nested),
+            we have access it by adding it after our parameter.
+            We also can rejoin specific leagues even after logging out
+        */}
+        {isMember.length > 0 ? 
+          (
+            <ul>
+              {isMember.map((membership) => (
+                <div key={membership.id}>
+                  <Link href={`/leagues/${membership.league.id}`}>
+                    <li>League Name: {membership.league.name}</li>
+                  </Link>
+                  <li>Role: {membership.role}</li>
+                  <li>Draft Status: {membership.league.draftStatus}</li>
+                </div>
+              ))}
+            </ul>
+          )
+          :
+          <p>NO leagues</p> 
+          }
     </div>
   )
 }

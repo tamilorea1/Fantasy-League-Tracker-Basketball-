@@ -3,7 +3,7 @@ import Link from "next/link"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
-
+import StartDraftButton from "@/app/leagues/[id]/StartDraftButton"
 
 /**
  * League Display Page
@@ -76,12 +76,26 @@ export default async function newLeaguePage({params}) {
     }
 
 
+
     /**
      * This variable will be used to check if the user has a team
-     * It checks id in our team records, if there's a teamOwener id that is the same as the current user's id
+     * It checks id in our team records, if there's a teamOwner id that is the same as the current user's id
      */
     const myTeam = league.team.find(team => team.teamOwnerId === session.user.id)
 
+    /**
+     * If the number of members is equal to the number of teams in our league
+     * Then all teams are ready
+     */
+    const allTeamsReady = league.leagueMember.length === league.team.length
+
+      /**
+       * Will help for when a user logout and want to reenter the draft
+       * If draft is in progress, redirect to draft room
+       */
+      if (league.draftStatus === 'IN_PROGRESS') {
+        redirect(`/leagues/${leagueIdentification}/draftRoom`)
+      }
 
   return (
     <div>
@@ -106,7 +120,23 @@ export default async function newLeaguePage({params}) {
           <button>
             Create team name
           </button>
-          </Link>}
+        </Link>}
+
+        {/**
+         * If these are all true we can begin the draft:
+         * All teams are ready
+         * The current user is the admin (They're the only one allowed to start the draft)
+         * The draft status is READY to begin
+         */}
+        {allTeamsReady && session.user.id === league.creator.id && league.draftStatus === 'READY' &&(
+
+          /**
+           * This is a client component
+           * Did this for better readability and no need for changing entire structure
+           * passed league.id as a prop
+           */
+          <StartDraftButton leagueId = {league.id}/>
+        )}
         
     </div>
   )

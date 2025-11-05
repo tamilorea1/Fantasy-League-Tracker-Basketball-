@@ -84,6 +84,43 @@ export async function POST(request) {
         })
 
         /**
+         * Counts the total amount of teams in our Team model for a specific league
+         * NOT including where gets all teams from our entire database
+         */
+        const totalTeams = await prisma.team.count({
+            where: {
+                leagueId: associatedLeague 
+            }
+        })
+
+        /**
+         * Counts the total amount of league members
+         * NOT including where gets all league members from our entire database 
+         */
+        const totalLeagueMembers = await prisma.leagueMember.count({
+            where: {
+                leagueId: associatedLeague 
+            }
+        })
+
+        /**
+         * checks if all teams in our league are created
+         * If so we change the status of the draft to be READY
+         * draft status is intially NOT_READY for all new leagues
+         */
+
+        if (totalTeams === totalLeagueMembers) {
+            await prisma.league.update({
+                where: {
+                    id: associatedLeague
+                },
+                data : {
+                    draftStatus: 'READY'
+                }
+            })
+        }
+
+        /**
          * return Success if all checks are passed
          */
         return NextResponse.json({

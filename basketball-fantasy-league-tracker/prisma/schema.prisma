@@ -31,7 +31,7 @@ model League {
   leagueMember LeagueMember[]
   team         Team[]
   draft        Draft?       //League can exist before the draft begins/ is created
-  draftStatus  String @default("NOT_READY") // NOT_READY, READY, IN_PROGRESS, COMPLETED
+  draftStatus  String       @default("NOT_READY") // NOT_READY, READY, IN_PROGRESS, COMPLETED
 }
 
 model LeagueMember {
@@ -64,7 +64,7 @@ model Team {
 model Draft{
   id                  String    @id @default(cuid())
   leagueId            String    @unique
-  status              String @default("IN_PROGRESS") // IN_PROGRESS, COMPLETED
+  status              String    @default("IN_PROGRESS") // IN_PROGRESS, COMPLETED
   totalRounds         Int   //Total Number of rounds in a draft (8-10)
   currentRound        Int   //Should be the first round of my draft initally
   currentPickNumber   Int   //The current pick of the Draft
