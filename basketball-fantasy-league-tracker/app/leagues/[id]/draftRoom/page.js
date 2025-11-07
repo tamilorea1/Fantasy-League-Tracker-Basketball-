@@ -55,7 +55,7 @@
 import {prisma} from "@/lib/prisma"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
-
+import DraftAPlayerButton from "./DraftAPlayerButton"
 /**
  * Main Draft Room Page Component
  * 
@@ -293,18 +293,14 @@ export default async function draftRoomPage({params}) {
         */}
         <div>
           <h2>Available Players (First 20)</h2>
-          {playersNotDraftedYet.slice(0,20).map((player) => (
-            <div key={player.id}>
-              <p>Player: {player.name}</p>
-              <p>NBA Team: {player.team} </p>
-              <p>Points: {player.points}</p>
-              <p>Rebounds: {player.rebounds}</p>
-              <p>Assists: {player.assists}</p>
-              <p>Blocks: {player.blocks}</p>
-              <p>Steals: {player.steals}</p>
-            </div>
-            )
-          )}
+            <DraftAPlayerButton 
+              availablePlayer = {playersNotDraftedYet}  //Players to display
+              currentPick = {currentPick}               //Who's turn is it
+              currentUserId = {session.user.id}         //Who's logged in
+              leagueId = {currentLeague}                //The league's id
+              draftId = {draftForThisLeague.id}         //The draft's id
+              
+              />
         </div>
         
           {/* Draft Board Section */}
