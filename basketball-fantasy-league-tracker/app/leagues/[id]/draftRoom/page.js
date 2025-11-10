@@ -56,6 +56,8 @@ import {prisma} from "@/lib/prisma"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
 import DraftAPlayerButton from "./DraftAPlayerButton"
+import RefreshDraftButton from "./RefreshDraftButton"
+import Link from "next/link"
 /**
  * Main Draft Room Page Component
  * 
@@ -186,6 +188,38 @@ export default async function draftRoomPage({params}) {
         }
       })
 
+      if (draftForThisLeague.status === 'COMPLETED') {
+        return(
+          <div>
+              <h1>Draft Complete</h1>
+              <p>All picks have been made</p>
+              <Link href={`/leagues/${currentLeague}`}>
+              {/**
+               * Final Draft Board
+               */}
+                  {draftForThisLeague.draftPick.map((pick) => (
+                  <div key={pick.id}>
+                    <p>Pick # {pick.pickNumber} - Round {pick.round}</p>
+                    <p>Team: {pick.team.teamName}</p>
+                    <p>Player: {pick.player.name}</p>
+                  </div>
+            ))}
+
+
+                  <button>
+                    Back to the League
+                  </button>
+              </Link>
+          </div>
+        )
+      }
+
+      const myTeam = draftForThisLeague.draftPick.filter((pick) => (
+          //checks if the pick belongs to the logged in user AND if the pick has a player(NOT EMPTY)
+          pick.team.teamOwnerId  === session.user.id && pick.playerId !== null
+        )
+      )
+
   // ============================================================
   // DETERMINE AVAILABLE PLAYERS
   // ============================================================
@@ -276,6 +310,7 @@ export default async function draftRoomPage({params}) {
 
         {/* Draft Status Section */}
         <h1>Draft Room</h1>
+        <RefreshDraftButton/>
         <p>Round: {draftForThisLeague.currentRound}</p>
         <p>Pick: {draftForThisLeague.currentPickNumber}</p>
         <p>Current Turn: {currentPick.team.teamName}</p>
@@ -291,6 +326,23 @@ export default async function draftRoomPage({params}) {
           
           For each player, show their name, NBA team, and key stats
         */}
+
+        {/* My Team Section */}
+        <div>
+            <h2>My Team</h2>
+            {myTeam.length > 0 ? (
+                <ul>
+                    {myTeam.map((pick) => (
+                        <li key={pick.id}>
+                            Round {pick.round}: {pick.player.name}
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p>No players drafted yet</p>
+            )}
+        </div>
+
         <div>
           <h2>Available Players (First 20)</h2>
             <DraftAPlayerButton 
@@ -299,8 +351,7 @@ export default async function draftRoomPage({params}) {
               currentUserId = {session.user.id}         //Who's logged in
               leagueId = {currentLeague}                //The league's id
               draftId = {draftForThisLeague.id}         //The draft's id
-              
-              />
+            />
         </div>
         
           {/* Draft Board Section */}

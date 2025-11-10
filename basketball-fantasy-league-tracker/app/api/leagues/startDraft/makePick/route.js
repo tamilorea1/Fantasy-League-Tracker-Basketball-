@@ -39,6 +39,13 @@ export async function POST(request) {
             )
         }
 
+            if (currentDraft.status === 'COMPLETED') {
+                return NextResponse.json(
+                    {error: 'Draft has already been completed'},
+                    {status: 400}
+                )
+            }
+
         //find the current pick using the draft's currentPickNumber
         const currentPick = currentDraft.draftPick.find((pick) => (
             pick.pickNumber === currentDraft.currentPickNumber
@@ -123,7 +130,7 @@ export async function POST(request) {
         }
 
 
-                /**
+        /**
          * Success message
          */
         return NextResponse.json({

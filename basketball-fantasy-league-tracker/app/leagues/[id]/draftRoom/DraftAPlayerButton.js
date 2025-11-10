@@ -4,21 +4,21 @@ import { useState } from "react"
 
 import { useRouter } from "next/navigation"
 
+import PlayerModal from "./PlayerModal"
+
 export default function DraftAPlayerButton({availablePlayer, currentPick, currentUserId, leagueId, draftId}) {
 
+     const [playerSearch, setPlayerSearch] = useState('')
+     const [open, setOpen] = useState(false)
+     const [selectedPlayer, setSelectedPlayer] = useState('')
      const [isLoading, setIsLoading] = useState(false)
      const [error, setError] = useState('')
 
      const router = useRouter()
 
+
     async function handleButton(playerChosen) {
-        /**
-         * Check if its the current users turn
-         */
-        if(currentPick.team.teamOwnerId !== currentUserId){
-            setError('Not your turn')
-            return
-        }
+
 
         setIsLoading(true)
         setError('')
@@ -49,18 +49,59 @@ export default function DraftAPlayerButton({availablePlayer, currentPick, curren
         }
     }
 
+    /**
+     * checks if it the current logged in user's turn
+     */
+    const isMyTurn = currentPick.team.teamOwnerId === currentUserId
 
+
+    /**
+     * If its not display the text
+     */
+    if (!isMyTurn) {
+        return <p>Waiting for {currentPick.team.teamName} to pick...</p>
+    }
+
+    const findPlayer = availablePlayer.filter((player) => 
+        //if a user types "lebron", it will display "Lebron James"
+        player.name.toLowerCase().includes(playerSearch.toLowerCase())
+    )
+
+
+    /**
+     * If it is the users turn show this
+     */
   return (
     <div>
         {error && <p>{error}</p>}
-        {availablePlayer.slice(0,5).map((player) => (
+        <input
+        value={playerSearch}
+        onChange={(e) => setPlayerSearch(e.target.value)}
+        placeholder="Enter a Player Name"
+        />
+        {findPlayer.map((player) => (
             <div key={player.id}>
-              <p>Player: {player.name}</p>
+              <p
+              onClick={() => {
+                setSelectedPlayer(player)
+                setOpen(true)
+                 }}
+                 style={{cursor: 'pointer', textDecoration: 'underline'}}
+              >Player: {player.name}</p>
               <button onClick={() => handleButton(player)} disabled={isLoading}>
                 {isLoading ? 'Drafting Player...' : 'Pick Player'}
-            </button>
+              </button>
             </div>
         ))}
+
+        {open && 
+        <PlayerModal
+        player={selectedPlayer}
+        onClose={() => {
+            setOpen(false)
+            setSelectedPlayer(null)
+        }}
+        />}
         
     </div>
   )
