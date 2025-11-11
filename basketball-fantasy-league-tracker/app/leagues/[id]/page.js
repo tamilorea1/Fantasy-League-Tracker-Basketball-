@@ -63,7 +63,15 @@ export default async function newLeaguePage({params}) {
           }
         },
 
-        team: true,
+        team: {
+          include: {
+            draftPick: {
+              include: {
+                player: true
+              }
+            }
+          }
+        }
         
       }
     })
@@ -95,6 +103,37 @@ export default async function newLeaguePage({params}) {
        */
       if (league.draftStatus === 'IN_PROGRESS') {
         redirect(`/leagues/${leagueIdentification}/draftRoom`)
+      }
+
+      if (league.draftStatus === 'COMPLETED') {
+        return(
+          <div>
+             <h1>{league.name}</h1>
+             <p>Draft Complete!</p>
+
+             <h2>Team Rosters</h2>
+             
+             {league.team.map((teams) => (
+              <div key={teams.id}>
+                  <h3>{teams.teamName}</h3>
+
+                  {teams.draftPick.filter((pick) => pick.playerId !== null).map((pick) => (
+                    <div key={pick.id}>
+                        <p>{pick.player.name} - {pick.player.team}</p>
+                        <p>PPG: {pick.player.points} | REB: {pick.player.rebounds} | AST: {pick.player.assists}</p>
+                    </div>
+                  ))}
+
+              </div>
+             ))}
+
+             <Link href='/dashboard'>
+                  <button>Back to the dashboard</button>
+             </Link>
+
+          </div>
+         
+        )
       }
 
   return (
