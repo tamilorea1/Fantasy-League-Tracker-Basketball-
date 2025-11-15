@@ -59,7 +59,18 @@ export default function DraftAPlayerButton({availablePlayer, currentPick, curren
      * If its not display the text
      */
     if (!isMyTurn) {
-        return <p>Waiting for {currentPick.team.teamName} to pick...</p>
+        return (
+            <div className="card" style={{ 
+                textAlign: 'center', 
+                padding: '32px',
+                backgroundColor: '#111',
+                borderColor: '#333'
+            }}>
+                <p style={{ fontSize: '1.125rem', color: '#ccc' }}>
+                    Waiting for <span style={{ fontWeight: '600', color: '#fff' }}>{currentPick.team.teamName}</span> to pick...
+                </p>
+            </div>
+        )
     }
 
     const findPlayer = availablePlayer.filter((player) => 
@@ -73,36 +84,100 @@ export default function DraftAPlayerButton({availablePlayer, currentPick, curren
      */
   return (
     <div>
-        {error && <p>{error}</p>}
-        <input
-        value={playerSearch}
-        onChange={(e) => setPlayerSearch(e.target.value)}
-        placeholder="Enter a Player Name"
-        />
-        {findPlayer.map((player) => (
-            <div key={player.id}>
-              <p
-              onClick={() => {
-                setSelectedPlayer(player)
-                setOpen(true)
-                 }}
-                 style={{cursor: 'pointer', textDecoration: 'underline'}}
-              >Player: {player.name}</p>
-              <button onClick={() => handleButton(player)} disabled={isLoading}>
-                {isLoading ? 'Drafting Player...' : 'Pick Player'}
-              </button>
-            </div>
-        ))}
+            {error && (
+                <div style={{
+                    backgroundColor: '#2a0000',
+                    border: '1px solid #ff4444',
+                    borderRadius: '6px',
+                    padding: '12px 16px',
+                    marginBottom: '16px',
+                    color: '#ff6666'
+                }}>
+                    {error}
+                </div>
+            )}
 
-        {open && 
-        <PlayerModal
-        player={selectedPlayer}
-        onClose={() => {
-            setOpen(false)
-            setSelectedPlayer(null)
-        }}
-        />}
-        
-    </div>
+            <div style={{ marginBottom: '20px' }}>
+                <input
+                    className="form-input"
+                    value={playerSearch}
+                    onChange={(e) => setPlayerSearch(e.target.value)}
+                    placeholder="Search for a player..."
+                    style={{ fontSize: '1rem' }}
+                />
+                <p className="text-muted" style={{ fontSize: '0.875rem', marginTop: '8px' }}>
+                    {findPlayer.length} player{findPlayer.length !== 1 ? 's' : ''} found
+                </p>
+            </div>
+
+            <div style={{
+                display: 'grid',
+                gap: '12px',
+                maxHeight: '600px',
+                overflowY: 'auto',
+                padding: '4px'
+            }}>
+                {findPlayer.slice(0, 50).map((player) => (
+                    <div 
+                        key={player.id}
+                        className="card"
+                        style={{
+                            padding: '16px',
+                            marginBottom: '0',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            gap: '16px'
+                        }}
+                    >
+                        <div style={{ flex: 1 }}>
+                            <p
+                                onClick={() => {
+                                    setSelectedPlayer(player)
+                                    setOpen(true)
+                                }}
+                                style={{
+                                    cursor: 'pointer',
+                                    textDecoration: 'underline',
+                                    color: '#fff',
+                                    fontWeight: '600',
+                                    fontSize: '1rem',
+                                    marginBottom: '4px'
+                                }}
+                            >
+                                {player.name}
+                            </p>
+                            <p className="text-muted" style={{ fontSize: '0.875rem' }}>
+                                {player.team} | PTS: {player.points} | REB: {player.rebounds} | AST: {player.assists}
+                            </p>
+                        </div>
+                        <button 
+                            onClick={() => handleButton(player)} 
+                            disabled={isLoading}
+                            className="btn btn-primary"
+                            style={{ padding: '8px 20px', fontSize: '0.875rem', whiteSpace: 'nowrap' }}
+                        >
+                            {isLoading ? 'Drafting...' : 'Draft'}
+                        </button>
+                    </div>
+                ))}
+
+                {findPlayer.length === 0 && (
+                    <div className="card" style={{ textAlign: 'center', padding: '32px' }}>
+                        <p className="text-muted">No players found matching "{playerSearch}"</p>
+                    </div>
+                )}
+            </div>
+
+            {open && 
+                <PlayerModal
+                    player={selectedPlayer}
+                    onClose={() => {
+                        setOpen(false)
+                        setSelectedPlayer(null)
+                    }}
+                />
+            }
+        </div>
   )
 }

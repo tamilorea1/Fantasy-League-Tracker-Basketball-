@@ -58,6 +58,7 @@ import { authOptions } from "@/lib/auth"
 import DraftAPlayerButton from "./DraftAPlayerButton"
 import RefreshDraftButton from "./RefreshDraftButton"
 import Link from "next/link"
+import { redirect } from "next/navigation"
 /**
  * Main Draft Room Page Component
  * 
@@ -189,30 +190,73 @@ export default async function draftRoomPage({params}) {
       })
 
       if (draftForThisLeague.status === 'COMPLETED') {
-        return(
-          <div>
-              <h1>Draft Complete</h1>
-              <p>All picks have been made</p>
-              <Link href={`/leagues/${currentLeague}`}>
-              {/**
-               * Final Draft Board
-               */}
-                  {draftForThisLeague.draftPick.map((pick) => (
-                  <div key={pick.id}>
-                    <p>Pick # {pick.pickNumber} - Round {pick.round}</p>
-                    <p>Team: {pick.team.teamName}</p>
-                    <p>Player: {pick.player.name}</p>
-                  </div>
-            ))}
+        return (
+            <div className="container" style={{ paddingTop: '40px', paddingBottom: '40px' }}>
+                <div style={{ marginBottom: '32px' }}>
+                    <h1 className="page-title" style={{ fontSize: '2.5rem', marginBottom: '8px' }}>
+                        Draft Complete!
+                    </h1>
+                    <div style={{
+                        display: 'inline-block',
+                        backgroundColor: '#002a00',
+                        border: '1px solid #4ade80',
+                        borderRadius: '6px',
+                        padding: '8px 16px',
+                        color: '#4ade80',
+                        fontWeight: '600',
+                        fontSize: '0.875rem'
+                    }}>
+                        ✓ All Picks Made
+                    </div>
+                </div>
 
+                <h2 className="section-title" style={{ marginBottom: '24px' }}>Final Draft Board</h2>
+                
+                <div style={{ marginBottom: '32px' }}>
+                    {draftForThisLeague.draftPick.map((pick) => (
+                        <div 
+                            key={pick.id}
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                padding: '12px 16px',
+                                backgroundColor: pick.round % 2 === 0 ? '#000' : '#111',
+                                borderBottom: '1px solid #222'
+                            }}
+                        >
+                            <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                                <span style={{
+                                    fontSize: '0.875rem',
+                                    color: '#666',
+                                    minWidth: '80px'
+                                }}>
+                                    Pick #{pick.pickNumber}
+                                </span>
+                                <span style={{
+                                    fontSize: '0.875rem',
+                                    color: '#888',
+                                    minWidth: '70px'
+                                }}>
+                                    Round {pick.round}
+                                </span>
+                                <span className="text-light" style={{ minWidth: '150px' }}>
+                                    {pick.team.teamName}
+                                </span>
+                            </div>
+                            <span style={{ fontWeight: '600', color: '#fff' }}>
+                                {pick.player.name}
+                            </span>
+                        </div>
+                    ))}
+                </div>
 
-                  <button>
-                    Back to the League
-                  </button>
-              </Link>
-          </div>
+                <Link href={`/leagues/${currentLeague}`} className="btn btn-primary">
+                    Back to League
+                </Link>
+            </div>
         )
-      }
+    }
 
       const myTeam = draftForThisLeague.draftPick.filter((pick) => (
           //checks if the pick belongs to the logged in user AND if the pick has a player(NOT EMPTY)
@@ -306,83 +350,188 @@ export default async function draftRoomPage({params}) {
     const currentPick = draftForThisLeague.draftPick.find((pick) => pick.pickNumber === draftForThisLeague.currentPickNumber)
 
   return (
-    <div>
+    <div className="container" style={{ paddingTop: '40px', paddingBottom: '40px' }}>
+            {/* Header Section */}
+            <div style={{ 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                alignItems: 'center',
+                marginBottom: '32px',
+                flexWrap: 'wrap',
+                gap: '16px'
+            }}>
+                <h1 className="page-title" style={{ fontSize: '2.5rem', margin: 0 }}>
+                    Draft Room
+                </h1>
+                <RefreshDraftButton />
+            </div>
 
-        {/* Draft Status Section */}
-        <h1>Draft Room</h1>
-        <RefreshDraftButton/>
-        <p>Round: {draftForThisLeague.currentRound}</p>
-        <p>Pick: {draftForThisLeague.currentPickNumber}</p>
-        <p>Current Turn: {currentPick.team.teamName}</p>
-        <p>Status: {draftForThisLeague.status}</p>
+            {/* Draft Status Card */}
+            <div className="card" style={{ marginBottom: '32px' }}>
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                    gap: '24px'
+                }}>
+                    <div>
+                        <p className="text-muted" style={{ fontSize: '0.875rem', marginBottom: '4px' }}>
+                            Round
+                        </p>
+                        <p style={{ fontSize: '1.5rem', fontWeight: '700', color: '#fff' }}>
+                            {draftForThisLeague.currentRound}
+                        </p>
+                    </div>
+                    <div>
+                        <p className="text-muted" style={{ fontSize: '0.875rem', marginBottom: '4px' }}>
+                            Pick
+                        </p>
+                        <p style={{ fontSize: '1.5rem', fontWeight: '700', color: '#fff' }}>
+                            {draftForThisLeague.currentPickNumber}
+                        </p>
+                    </div>
+                    <div>
+                        <p className="text-muted" style={{ fontSize: '0.875rem', marginBottom: '4px' }}>
+                            On the Clock
+                        </p>
+                        <p style={{ fontSize: '1.5rem', fontWeight: '700', color: '#4ade80' }}>
+                            {currentPick.team.teamName}
+                        </p>
+                    </div>
+                    <div>
+                        <p className="text-muted" style={{ fontSize: '0.875rem', marginBottom: '4px' }}>
+                            Status
+                        </p>
+                        <p style={{ fontSize: '1.5rem', fontWeight: '700', color: '#fbbf24' }}>
+                            {draftForThisLeague.status}
+                        </p>
+                    </div>
+                </div>
+            </div>
 
-        {/* Available Players Section */}
-        {/* 
-          Display only first 20 available players
-          Why limit to 20? 
-          - Prevents overwhelming UI
-          - Better performance (less DOM elements)
-          - In production, you'd add search/filter functionality
-          
-          For each player, show their name, NBA team, and key stats
-        */}
+            {/* Main Content Grid */}
+            <div style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 2fr',
+                gap: '24px',
+                marginBottom: '32px'
+            }}>
+                {/* My Team Section */}
+                <div>
+                    <h2 className="section-title" style={{ marginBottom: '16px' }}>
+                        My Team
+                    </h2>
+                    <div className="card">
+                        <div className="card-body">
+                            {myTeam.length > 0 ? (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                    {myTeam.map((pick) => (
+                                        <div 
+                                            key={pick.id}
+                                            style={{
+                                                padding: '12px',
+                                                backgroundColor: '#000',
+                                                borderRadius: '4px',
+                                                border: '1px solid #222'
+                                            }}
+                                        >
+                                            <p style={{ fontSize: '0.875rem', color: '#666', marginBottom: '4px' }}>
+                                                Round {pick.round}
+                                            </p>
+                                            <p style={{ fontWeight: '600', color: '#fff' }}>
+                                                {pick.player.name}
+                                            </p>
+                                            <p className="text-muted" style={{ fontSize: '0.875rem', marginTop: '4px' }}>
+                                                {pick.player.team} | {pick.player.points} PPG
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="text-muted" style={{ textAlign: 'center', padding: '20px' }}>
+                                    No players drafted yet
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                </div>
 
-        {/* My Team Section */}
-        <div>
-            <h2>My Team</h2>
-            {myTeam.length > 0 ? (
-                <ul>
-                    {myTeam.map((pick) => (
-                        <li key={pick.id}>
-                            Round {pick.round}: {pick.player.name}
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No players drafted yet</p>
-            )}
+                {/* Available Players Section */}
+                <div>
+                    <h2 className="section-title" style={{ marginBottom: '16px' }}>
+                        Available Players
+                    </h2>
+                    <DraftAPlayerButton 
+                        availablePlayer={playersNotDraftedYet}
+                        currentPick={currentPick}
+                        currentUserId={session.user.id}
+                        leagueId={currentLeague}
+                        draftId={draftForThisLeague.id}
+                    />
+                </div>
+            </div>
+
+            {/* Draft Board Section */}
+            <div>
+                <h2 className="section-title" style={{ marginBottom: '16px' }}>
+                    Draft Board
+                </h2>
+                <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+                    <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
+                        {draftForThisLeague.draftPick.map((pick) => (
+                            <div 
+                                key={pick.id}
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    padding: '12px 20px',
+                                    backgroundColor: pick.pickNumber === draftForThisLeague.currentPickNumber 
+                                        ? '#0a2a0a' 
+                                        : pick.round % 2 === 0 ? '#000' : '#111',
+                                    borderBottom: '1px solid #222',
+                                    borderLeft: pick.pickNumber === draftForThisLeague.currentPickNumber 
+                                        ? '4px solid #4ade80' 
+                                        : '4px solid transparent'
+                                }}
+                            >
+                                <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flex: 1 }}>
+                                    <span style={{
+                                        fontSize: '0.875rem',
+                                        color: '#666',
+                                        minWidth: '60px',
+                                        fontWeight: pick.pickNumber === draftForThisLeague.currentPickNumber ? '600' : '400'
+                                    }}>
+                                        #{pick.pickNumber}
+                                    </span>
+                                    <span style={{
+                                        fontSize: '0.875rem',
+                                        color: '#888',
+                                        minWidth: '70px'
+                                    }}>
+                                        Round {pick.round}
+                                    </span>
+                                    <span 
+                                        className="text-light" 
+                                        style={{ 
+                                            minWidth: '150px',
+                                            fontWeight: pick.pickNumber === draftForThisLeague.currentPickNumber ? '600' : '400'
+                                        }}
+                                    >
+                                        {pick.team.teamName}
+                                    </span>
+                                </div>
+                                <span style={{ 
+                                    fontWeight: '600', 
+                                    color: pick.player ? '#fff' : '#666',
+                                    fontStyle: pick.player ? 'normal' : 'italic'
+                                }}>
+                                    {pick.player ? pick.player.name : 'Upcoming Pick'}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div>
-          <h2>Available Players (First 20)</h2>
-            <DraftAPlayerButton 
-              availablePlayer = {playersNotDraftedYet}  //Players to display
-              currentPick = {currentPick}               //Who's turn is it
-              currentUserId = {session.user.id}         //Who's logged in
-              leagueId = {currentLeague}                //The league's id
-              draftId = {draftForThisLeague.id}         //The draft's id
-            />
-        </div>
-        
-          {/* Draft Board Section */}
-
-          {/* Shows all picks in order (completed and upcoming)
-          This is like the big board you'd see on ESPN during NFL Draft*/}
-
-           {/* Map over ALL draft picks (already sorted by pickNumber from our query)
-          Shows complete draft history and upcoming picks
-          For completed picks: Shows which team picked which player
-          For upcoming picks: Shows which team is up next
-            */}
-        <div>
-          <h2>Draft Board</h2>
-          {draftForThisLeague.draftPick.map((pick) => (
-          <div key={pick.id}>
-            <p>Pick # {pick.pickNumber} - Round {pick.round}</p>
-            <p>Team: {pick.team.teamName}</p>
-
-            {/* 
-              Conditional rendering:
-              - If pick.player exists: Show the player's name (pick has been made)
-              - If pick.player is null: Show "Upcoming Pick" (pick hasn't been made yet)
-              
-              This allows the draft board to show both past picks and future picks
-            */}
-            {pick.player ? pick.player.name : 'Upcoming Pick'}
-          </div>
-        ))}
-        </div>
-        
-    </div>
   )
 }

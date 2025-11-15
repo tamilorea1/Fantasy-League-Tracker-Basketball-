@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import {signIn} from 'next-auth/react'
+import Link from "next/link"
+
 
 export default function LoginPage() {
 
@@ -45,31 +47,68 @@ export default function LoginPage() {
   }
 
   return (
-    <div>
-      <h1>The Login Page</h1>
-      {error && <p>{error}</p>}
-        <form onSubmit={handleSubmit}>
-            <input
-            type="text"
-            name="email"
-            value={isEmail}
-            onChange={(e) => setIsEmail(e.target.value)}
-            required
-            />
-            
-            
-            
-            <input
-            type="password"
-            name="password"
-            value={isPassword}
-            onChange={(e) => setIsPassword(e.target.value)}
-            required
-            />
+    <div className="page-container">
+            <div className="content-wrapper">
+                <h1 className="page-title">Welcome Back</h1>
+                <p className="page-subtitle">Login to your fantasy basketball league</p>
 
-            <button type="submit" disabled={isLoading}> {isLoading ? 'Logging in...' : 'Ready to Login'} </button>
+                {error && (
+                    <div style={{
+                        backgroundColor: '#2a0000',
+                        border: '1px solid #ff4444',
+                        borderRadius: '6px',
+                        padding: '12px 16px',
+                        marginBottom: '24px',
+                        color: '#ff6666'
+                    }}>
+                        {error}
+                    </div>
+                )}
 
-        </form>
-    </div>
+                <form onSubmit={handleSubmit} style={{ maxWidth: '400px', width: '100%' }}>
+                    <div className="form-group">
+                        <label className="form-label">Email</label>
+                        <input
+                            className="form-input"
+                            type="email"
+                            name="email"
+                            placeholder="example@gmail.com"
+                            value={isEmail}
+                            onChange={(e) => setIsEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label className="form-label">Password</label>
+                        <input
+                            className="form-input"
+                            type="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            value={isPassword}
+                            onChange={(e) => setIsPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        disabled={isLoading}
+                        className="btn btn-primary"
+                        style={{ width: '100%', marginTop: '8px' }}
+                    >
+                        {isLoading ? 'Logging in...' : 'Login'}
+                    </button>
+                </form>
+
+                <p className="text-light" style={{ marginTop: '24px' }}>
+                    Don't have an account?{' '}
+                    <Link href="/signup" style={{ color: '#fff', textDecoration: 'underline' }}>
+                        Sign Up
+                    </Link>
+                </p>
+            </div>
+        </div>
   )
 }

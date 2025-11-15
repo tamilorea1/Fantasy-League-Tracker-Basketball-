@@ -79,8 +79,20 @@ export default async function newLeaguePage({params}) {
 
 
     //if league doesn't exist with this id show the print statement
-    if (!league) {
-      return <p>League not found</p>
+if (!league) {
+        return (
+            <div className="page-container">
+                <div className="content-wrapper">
+                    <h1 className="page-title">League Not Found</h1>
+                    <p className="text-light" style={{ marginBottom: '24px' }}>
+                        This league doesn't exist or you don't have access to it.
+                    </p>
+                    <Link href="/dashboard" className="btn btn-primary">
+                        Back to Dashboard
+                    </Link>
+                </div>
+            </div>
+        )
     }
 
 
@@ -105,78 +117,239 @@ export default async function newLeaguePage({params}) {
         redirect(`/leagues/${leagueIdentification}/draftRoom`)
       }
 
-      if (league.draftStatus === 'COMPLETED') {
-        return(
-          <div>
-             <h1>{league.name}</h1>
-             <p>Draft Complete!</p>
-
-             <h2>Team Rosters</h2>
-             
-             {league.team.map((teams) => (
-              <div key={teams.id}>
-                  <h3>{teams.teamName}</h3>
-
-                  {teams.draftPick.filter((pick) => pick.playerId !== null).map((pick) => (
-                    <div key={pick.id}>
-                        <p>{pick.player.name} - {pick.player.team}</p>
-                        <p>PPG: {pick.player.points} | REB: {pick.player.rebounds} | AST: {pick.player.assists}</p>
+          // DRAFT COMPLETED STATE
+    if (league.draftStatus === 'COMPLETED') {
+        return (
+            <div className="container" style={{ paddingTop: '40px', paddingBottom: '40px' }}>
+                <div style={{ marginBottom: '32px' }}>
+                    <h1 className="page-title" style={{ fontSize: '2.5rem', marginBottom: '8px' }}>
+                        {league.name}
+                    </h1>
+                    <div style={{
+                        display: 'inline-block',
+                        backgroundColor: '#002a00',
+                        border: '1px solid #4ade80',
+                        borderRadius: '6px',
+                        padding: '8px 16px',
+                        color: '#4ade80',
+                        fontWeight: '600',
+                        fontSize: '0.875rem'
+                    }}>
+                        ✓ Draft Complete
                     </div>
-                  ))}
+                </div>
 
-              </div>
-             ))}
+                <h2 className="section-title" style={{ marginBottom: '24px' }}>Team Rosters</h2>
+                
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
+                    gap: '24px',
+                    marginBottom: '40px'
+                }}>
+                    {league.team.map((teams) => (
+                        <div key={teams.id} className="card">
+                            <h3 className="card-header">{teams.teamName}</h3>
+                            <div className="card-body">
+                                {teams.draftPick.filter((pick) => pick.playerId !== null).length > 0 ? (
+                                    teams.draftPick
+                                        .filter((pick) => pick.playerId !== null)
+                                        .map((pick) => (
+                                            <div 
+                                                key={pick.id} 
+                                                style={{
+                                                    padding: '12px',
+                                                    marginBottom: '8px',
+                                                    backgroundColor: '#000',
+                                                    borderRadius: '4px',
+                                                    border: '1px solid #222'
+                                                }}
+                                            >
+                                                <p style={{ 
+                                                    fontWeight: '600', 
+                                                    marginBottom: '4px',
+                                                    color: '#fff'
+                                                }}>
+                                                    {pick.player.name}
+                                                </p>
+                                                <p className="text-muted" style={{ fontSize: '0.875rem' }}>
+                                                    {pick.player.team}
+                                                </p>
+                                                <p className="text-light" style={{ fontSize: '0.875rem', marginTop: '4px' }}>
+                                                    PPG: {pick.player.points} | REB: {pick.player.rebounds} | AST: {pick.player.assists}
+                                                </p>
+                                            </div>
+                                        ))
+                                ) : (
+                                    <p className="text-muted">No players drafted</p>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </div>
 
-             <Link href='/dashboard'>
-                  <button>Back to the dashboard</button>
-             </Link>
-
-          </div>
-         
+                <Link href='/dashboard' className="btn btn-secondary">
+                    ← Back to Dashboard
+                </Link>
+            </div>
         )
-      }
+    }
 
   return (
-    <div>
-        <p>League Name: {league.name}</p>
-        <p>Number of members: {league.leagueMember.length}</p>
-        <p>Creator: {league.creator.name}</p>
-        <p>Join Code: {league.joinCode}</p>
-        
-        {/*Iterates through each league member and shows their name */}
-        {league.leagueMember.map((member) =>(
-          <div key={member.id}>
-              <li>{member.user.name}</li>
-          </div>
-        ))}
+    <div className="container" style={{ paddingTop: '40px', paddingBottom: '40px' }}>
+            {/* League Header */}
+            <div style={{ marginBottom: '40px' }}>
+                <h1 className="page-title" style={{ fontSize: '2.5rem', marginBottom: '16px' }}>
+                    {league.name}
+                </h1>
+                
+                <div style={{ 
+                    display: 'flex', 
+                    gap: '24px', 
+                    flexWrap: 'wrap',
+                    marginBottom: '16px'
+                }}>
+                    <div>
+                        <span className="text-muted" style={{ fontSize: '0.875rem' }}>Join Code: </span>
+                        <span style={{
+                            fontWeight: '700',
+                            fontSize: '1.25rem',
+                            letterSpacing: '0.1em',
+                            color: '#fff'
+                        }}>
+                            {league.joinCode}
+                        </span>
+                    </div>
+                    <div>
+                        <span className="text-muted" style={{ fontSize: '0.875rem' }}>Creator: </span>
+                        <span className="text-light">{league.creator.name}</span>
+                    </div>
+                    <div>
+                        <span className="text-muted" style={{ fontSize: '0.875rem' }}>Members: </span>
+                        <span className="text-light">{league.leagueMember.length}</span>
+                    </div>
+                </div>
+            </div>
 
-        {/**
-         * If a team name has been created we display the current user's name
-         * else we route them to create their team name and be redirected back to this page
-         */}
-        {myTeam ? <p>Your team name: {myTeam.teamName}</p> : 
-        <Link href={`/leagues/${leagueIdentification}/createTeam`}>
-          <button>
-            Create team name
-          </button>
-        </Link>}
+            {/* Team Status Section */}
+            {/**
+               * If a team name has been created we display the current user's name
+               * else we route them to create their team name and be redirected back to this page
+               */}
+            {myTeam ? (
+                <div className="card" style={{ marginBottom: '32px', backgroundColor: '#0a2a0a', borderColor: '#2a5a2a' }}>
+                    <div className="card-body">
+                        <span className="text-muted" style={{ fontSize: '0.875rem' }}>Your Team: </span>
+                        <span style={{ fontSize: '1.125rem', fontWeight: '600', color: '#4ade80' }}>
+                            {myTeam.teamName}
+                        </span>
+                    </div>
+                </div>
+            ) : (
+                <div className="card" style={{ marginBottom: '32px', backgroundColor: '#2a2a00', borderColor: '#5a5a2a' }}>
+                    <div className="card-body" style={{ textAlign: 'center' }}>
+                        <p className="text-light" style={{ marginBottom: '16px' }}>
+                            You need to create a team name before the draft can begin
+                        </p>
+                        <Link href={`/leagues/${leagueIdentification}/createTeam`} className="btn btn-primary">
+                            Create Team Name
+                        </Link>
+                    </div>
+                </div>
+            )}
 
-        {/**
-         * If these are all true we can begin the draft:
-         * All teams are ready
-         * The current user is the admin (They're the only one allowed to start the draft)
-         * The draft status is READY to begin
-         */}
-        {allTeamsReady && session.user.id === league.creator.id && league.draftStatus === 'READY' &&(
+            {/* League Members Section */}
+            {/*Iterates through each league member and shows their name */}
+            <div style={{ marginBottom: '32px' }}>
+                <h2 className="section-title" style={{ marginBottom: '16px' }}>League Members</h2>
+                <div className="card">
+                    <div className="card-body">
+                        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                            {league.leagueMember.map((member, index) => (
+                                <li 
+                                    key={member.id}
+                                    style={{
+                                        padding: '12px 0',
+                                        borderBottom: index !== league.leagueMember.length - 1 ? '1px solid #333' : 'none',
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center'
+                                    }}
+                                >
+                                    <span className="text-light">{member.user.name}</span>
+                                    {member.role === 'ADMIN' && (
+                                        <span style={{
+                                            fontSize: '0.75rem',
+                                            padding: '4px 8px',
+                                            backgroundColor: '#222',
+                                            borderRadius: '4px',
+                                            color: '#ccc'
+                                        }}>
+                                            ADMIN
+                                        </span>
+                                    )}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+            </div>
 
-          /**
-           * This is a client component
-           * Did this for better readability and no need for changing entire structure
-           * passed league.id as a prop
-           */
-          <StartDraftButton leagueId = {league.id}/>
-        )}
-        
-    </div>
+            {/* Start Draft Section - Only visible to admin when ready */}
+            {/**
+             * If these are all true we can begin the draft:
+             * All teams are ready
+             * The current user is the admin (They're the only one allowed to start the draft)
+             * The draft status is READY to begin
+             */}
+            {allTeamsReady && session.user.id === league.creator.id && league.draftStatus === 'READY' && (
+                <div className="card" style={{ backgroundColor: '#0a2a0a', borderColor: '#2a5a2a', textAlign: 'center' }}>
+                    <div className="card-body">
+                        <p style={{ fontSize: '1.125rem', marginBottom: '8px', color: '#4ade80', fontWeight: '600' }}>
+                            All teams are ready!
+                        </p>
+                        <p className="text-light" style={{ marginBottom: '16px' }}>
+                            You can now start the draft
+                        </p>
+                        
+                      {/**
+                       * This is a client component
+                       * Did this for better readability and no need for changing entire structure
+                       * passed league.id as a prop
+                       */}
+                        <StartDraftButton leagueId={league.id} />
+                    </div>
+                </div>
+            )}
+
+            {/* Not Ready Message */}
+            {!allTeamsReady && (
+                <div className="card" style={{ textAlign: 'center', backgroundColor: '#2a2a00', borderColor: '#5a5a2a' }}>
+                    <div className="card-body">
+                        <p className="text-light">
+                            Waiting for all members to create their team names...
+                        </p>
+                        <p className="text-muted" style={{ fontSize: '0.875rem', marginTop: '8px' }}>
+                            {league.team.length}/{league.leagueMember.length} teams ready
+                        </p>
+                    </div>
+                </div>
+            )}
+
+            {/* Back to Dashboard Link */}
+            <div style={{ marginTop: '32px' }}>
+                <Link href="/dashboard" className="btn btn-secondary">
+                    ← Back to Dashboard
+                </Link>
+            </div>
+        </div>
   )
 }
+
+
+
+
+
+
+
+

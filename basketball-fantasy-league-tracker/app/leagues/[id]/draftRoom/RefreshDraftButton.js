@@ -26,10 +26,13 @@ export default function RefreshDraftButton() {
 
 
   return (
-    <div>
-        <button onClick={handleRefresh} disabled={isLoading}>
-            {isLoading ? 'Refreshing...' : 'Refresh Draft'}
+    <button 
+            onClick={handleRefresh} 
+            disabled={isLoading}
+            className="btn btn-outline"
+            style={{ fontSize: '0.875rem', padding: '8px 16px' }}
+        >
+            {isLoading ? 'Refreshing...' : '🔄 Refresh Draft'}
         </button>
-    </div>
   )
 }

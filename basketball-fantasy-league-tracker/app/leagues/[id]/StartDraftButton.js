@@ -56,11 +56,27 @@ export default function StartDraftButton({leagueId}) {
     }
 
   return (
-    <div>
-        {error && <p>{error}</p>}
-        <button onClick={handleStartDraft} disabled= {isLoading}>
-            {isLoading ? 'Starting Draft...' : 'Begin Draft'}
-        </button>
-    </div>
+     <div style={{ marginTop: '24px' }}>
+            {error && (
+                <div style={{
+                    backgroundColor: '#2a0000',
+                    border: '1px solid #ff4444',
+                    borderRadius: '6px',
+                    padding: '12px 16px',
+                    marginBottom: '16px',
+                    color: '#ff6666'
+                }}>
+                    {error}
+                </div>
+            )}
+            <button 
+                onClick={handleStartDraft} 
+                disabled={isLoading}
+                className="btn btn-primary"
+                style={{ fontSize: '1.125rem', padding: '16px 40px' }}
+            >
+                {isLoading ? 'Starting Draft...' : 'Begin Draft'}
+            </button>
+        </div>
   )
 }

@@ -3,6 +3,7 @@
 import { useState } from "react"
 
 import { useRouter, useParams } from "next/navigation"
+import Link from "next/link"
 
 /**
  * This page is used to create a users Team name
@@ -72,19 +73,71 @@ export default function createTeamPage() {
     }
 
   return (
-    <div>
-        {error && <p>{error}</p>}
-        <form onSubmit={handleTeamSubmit}>
-            <input
-                type="text"
-                name="teamName"
-                value={teamName}
-                onChange={(e) => setTeamName(e.target.value)}            
-            />
+    <div className="page-container">
+            <div className="content-wrapper">
+                <h1 className="page-title">Create Your Team</h1>
+                <p className="page-subtitle">Choose a name that will strike fear into your opponents</p>
 
-            <button type="submit" disabled={isLoading}>{isLoading ? 'Creating Team...' : 'Create Your Team'}</button>
-        </form>
-        {message && <p>{message}</p>}
-    </div>
+                {error && (
+                    <div style={{
+                        backgroundColor: '#2a0000',
+                        border: '1px solid #ff4444',
+                        borderRadius: '6px',
+                        padding: '12px 16px',
+                        marginBottom: '24px',
+                        color: '#ff6666'
+                    }}>
+                        {error}
+                    </div>
+                )}
+
+                {message && (
+                    <div style={{
+                        backgroundColor: '#002a00',
+                        border: '1px solid #44ff44',
+                        borderRadius: '6px',
+                        padding: '12px 16px',
+                        marginBottom: '24px',
+                        color: '#66ff66'
+                    }}>
+                        {message}
+                    </div>
+                )}
+
+                <form onSubmit={handleTeamSubmit} style={{ maxWidth: '400px', width: '100%' }}>
+                    <div className="form-group">
+                        <label className="form-label">Team Name</label>
+                        <input
+                            className="form-input"
+                            type="text"
+                            name="teamName"
+                            value={teamName}
+                            onChange={(e) => setTeamName(e.target.value)}
+                            placeholder="Enter your team name"
+                            maxLength="30"
+                            required
+                        />
+                        <p className="text-muted" style={{ fontSize: '0.875rem', marginTop: '8px' }}>
+                            Make it memorable!
+                        </p>
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        disabled={isLoading}
+                        className="btn btn-primary"
+                        style={{ width: '100%', marginTop: '8px' }}
+                    >
+                        {isLoading ? 'Creating Team...' : 'Create Team'}
+                    </button>
+                </form>
+
+                <p className="text-light" style={{ marginTop: '24px' }}>
+                    <Link href={`/leagues/${associatedLeague}`} style={{ color: '#ccc', textDecoration: 'underline' }}>
+                        ← Back to League
+                    </Link>
+                </p>
+            </div>
+        </div>
   )
 }

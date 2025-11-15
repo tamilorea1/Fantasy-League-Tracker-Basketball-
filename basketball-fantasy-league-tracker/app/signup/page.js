@@ -2,6 +2,8 @@
 import { useState } from "react"
 
 import { useRouter } from "next/navigation"
+import Link from "next/link"
+
 
 export default function SignUpPage() {
     const router = useRouter()
@@ -57,38 +59,82 @@ export default function SignUpPage() {
 
 
   return (
-    <div>
-        <h1>Welcome to the Sign Up page</h1>
-        {error && <p>{error}</p>}
-        <form onSubmit={handleSubmit}>
-            <input 
-            type="email"
-             value={email} 
-             name="email" 
-             placeholder="Example@gmail.com" 
-             onChange={(e) => setEmail(e.target.value)}
-              />
+    <div className="page-container">
+            <div className="content-wrapper">
+                <h1 className="page-title">Create Account</h1>
+                <p className="page-subtitle">Join your fantasy basketball league</p>
 
-            <input 
-            type="password" 
-            value={password} 
-            name="password" 
-            minLength="8" 
-            onChange={(e) => setPassword(e.target.value)}
-             />
+                {error && (
+                    <div style={{
+                        backgroundColor: '#2a0000',
+                        border: '1px solid #ff4444',
+                        borderRadius: '6px',
+                        padding: '12px 16px',
+                        marginBottom: '24px',
+                        color: '#ff6666'
+                    }}>
+                        {error}
+                    </div>
+                )}
 
-            <input 
-            type="text" 
-            value={name} 
-            name="name" 
-            onChange={(e) => setName(e.target.value)}
-            required />
+                <form onSubmit={handleSubmit} style={{ maxWidth: '400px', width: '100%' }}>
+                    <div className="form-group">
+                        <label className="form-label">Name</label>
+                        <input 
+                            className="form-input"
+                            type="text" 
+                            value={name} 
+                            name="name"
+                            placeholder="Enter your name"
+                            onChange={(e) => setName(e.target.value)}
+                            required 
+                        />
+                    </div>
 
-            <button type="submit" disabled={isLoading} >
-                {isLoading ? "Signing up..." : "Sign Up"}
-            </button>
+                    <div className="form-group">
+                        <label className="form-label">Email</label>
+                        <input 
+                            className="form-input"
+                            type="email"
+                            value={email} 
+                            name="email" 
+                            placeholder="example@gmail.com" 
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
 
-        </form>
-    </div>
+                    <div className="form-group">
+                        <label className="form-label">Password</label>
+                        <input 
+                            className="form-input"
+                            type="password" 
+                            value={password} 
+                            name="password" 
+                            placeholder="Minimum 8 characters"
+                            minLength="8" 
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        disabled={isLoading}
+                        className="btn btn-primary"
+                        style={{ width: '100%', marginTop: '8px' }}
+                    >
+                        {isLoading ? "Signing up..." : "Sign Up"}
+                    </button>
+                </form>
+
+                <p className="text-light" style={{ marginTop: '24px' }}>
+                    Already have an account?{' '}
+                    <Link href="/login" style={{ color: '#fff', textDecoration: 'underline' }}>
+                        Login
+                    </Link>
+                </p>
+            </div>
+        </div>
   )
 }
