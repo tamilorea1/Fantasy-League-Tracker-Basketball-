@@ -103,7 +103,7 @@ export default async function DashboardPage() {
                 ) : (
                     <div className="card" style={{ textAlign: 'center', padding: '48px 24px' }}>
                         <p className="text-light" style={{ fontSize: '1.125rem', marginBottom: '24px' }}>
-                            You haven't joined any leagues yet
+                            You have not joined any leagues yet
                         </p>
                         <div className="button-group">
                             <Link href='/leagues/create' className="btn btn-primary">

@@ -164,7 +164,7 @@ export default function DraftAPlayerButton({availablePlayer, currentPick, curren
 
                 {findPlayer.length === 0 && (
                     <div className="card" style={{ textAlign: 'center', padding: '32px' }}>
-                        <p className="text-muted">No players found matching "{playerSearch}"</p>
+                        <p className="text-muted">No players found matching: {playerSearch}</p>
                     </div>
                 )}
             </div>

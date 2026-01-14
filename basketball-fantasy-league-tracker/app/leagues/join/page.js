@@ -78,7 +78,7 @@ export default function JoinLeaguePage() {
     <div className="page-container">
             <div className="content-wrapper">
                 <h1 className="page-title">Join a League</h1>
-                <p className="page-subtitle">Enter your league's join code to get started</p>
+                <p className="page-subtitle">Enter your leagues join code to get started</p>
 
                 {error && (
                     <div style={{

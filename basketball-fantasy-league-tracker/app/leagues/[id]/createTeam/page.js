@@ -14,7 +14,7 @@ import Link from "next/link"
  */
 
 
-export default function createTeamPage() {
+export default function CreateTeamPage() {
 
     const [teamName, setTeamName] = useState('')
     const [isLoading, setIsLoading] = useState(false)

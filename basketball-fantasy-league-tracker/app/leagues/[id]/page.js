@@ -85,7 +85,7 @@ if (!league) {
                 <div className="content-wrapper">
                     <h1 className="page-title">League Not Found</h1>
                     <p className="text-light" style={{ marginBottom: '24px' }}>
-                        This league doesn't exist or you don't have access to it.
+                        This league does not exist or you do not have access to it.
                     </p>
                     <Link href="/dashboard" className="btn btn-primary">
                         Back to Dashboard
