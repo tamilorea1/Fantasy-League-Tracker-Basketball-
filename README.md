@@ -3,46 +3,46 @@ A modern, full-stack basketball management application built to help users draft
 
 **🔗 [Live Demo](https://fantasy-league-tracker-basketball-u.vercel.app/)** ---
 
-✨ Features
-Real-time Draft Room: Experience a live drafting environment where you can select players and build your roster instantly.
+## ✨ Features
+- **Real-time Draft Room:** Experience a live drafting environment where you can select players and build your roster instantly.
 
-Team Management: Create and manage fantasy teams with ease, tracking your lineup and roster changes.
+- **Team Management:** Create and manage fantasy teams with ease, tracking your lineup and roster changes.
 
-Secure Authentication: Robust user login and session management powered by NextAuth.js.
+- **Secure Authentication:** Robust user login and session management powered by NextAuth.js.
 
-Cloud Database: Powered by Supabase (PostgreSQL) with connection pooling for high-performance serverless execution.
+- **Cloud Database:** Powered by Supabase (PostgreSQL) with connection pooling for high-performance serverless execution.
 
-Dockerized Workflow: Fully containerized development environment using Docker Compose for a "one-command" setup.
+- **Dockerized Workflow:** Fully containerized development environment using Docker Compose for a "one-command" setup.
 
-🛠️ Tech Stack
-Framework: Next.js 15 (App Router)
+## 🛠️ Tech Stack
+- **Framework:** Next.js 15 (App Router)
 
-Authentication: NextAuth.js v4
+- **Authentication:** NextAuth.js v4
 
-Database: PostgreSQL via Supabase
+- **Database:** PostgreSQL via Supabase
 
-ORM: Prisma
+- **ORM:** Prisma
 
-Infrastructure: Docker & Vercel
+- **Infrastructure:** Docker & Vercel
 
-Styling: CSS
+- **Styling:** CSS
 
-🚀 Getting Started
+## 🚀 Getting Started
 Prerequisites
-Node.js (Latest LTS)
+- Node.js (Latest LTS)
 
-Docker Desktop
+- Docker Desktop
 
-A Supabase Project (for cloud database)
+- A Supabase Project (for cloud database)
 
-Local Installation
-Clone the repository:
+## Local Installation
+- Clone the repository:
 
 Bash
 
-git clone [https://github.com/tamilorea1/Fantasy-League-Tracker-Basketball-.git]
-cd Fantasy-League-Tracker-Basketball-/basketball-fantasy-league-tracker
-Set up Environment Variables:
+- git clone [https://github.com/tamilorea1/Fantasy-League-Tracker-Basketball-.git]
+- cd Fantasy-League-Tracker-Basketball-/basketball-fantasy-league-tracker
+## Set up Environment Variables:
 
 Create a .env file in the root directory and add your Supabase connection strings and secrets:
 
