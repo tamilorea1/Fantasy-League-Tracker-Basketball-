@@ -1,7 +1,7 @@
 🏀 Fantasy League Tracker
 A modern, full-stack basketball management application built to help users draft players and track their fantasy league teams in real-time. This application features a live draft room, real-time player data, and a seamless integration between a Next.js 15 frontend and a Supabase database.
 
-**🔗 [Live Demo](https://cybersecurity-threat-detector.web.app/)** ---
+**🔗 [Live Demo](https://fantasy-league-tracker-basketball-u.vercel.app/)** ---
 
 ## ✨ Features
 - **Real-time Draft Room:** Experience a live drafting environment where you can select players and build your roster instantly.
